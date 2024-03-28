@@ -42,7 +42,7 @@ let weather = {
         document.querySelector(".wind").innerText = "Wind speed: " + speed + " km/h";
         document.querySelector(".clouds").innerText = "Clouds coverage: " + all + "%";
         document.querySelector(".sunrise").innerText = "Sunrise: " + sunriseHoursDisplay + ":" + sunriseMinutesDisplay + ":" + sunriseSecondsDisplay + " AM";
-        document.querySelector(".sunset").innerText = "Sunset: " + sunsetHoursDisplay + ":" + sunsetMinutes + ":" + sunsetSecondsDisplay + " PM";
+        document.querySelector(".sunset").innerText = "Sunset: " + sunsetHoursDisplay + ":" + sunsetMinutesDisplay + ":" + sunsetSecondsDisplay + " PM";
 
         document.querySelector(".weather").classList.remove("loading");
        
