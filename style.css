@@ -85,7 +85,11 @@ button:hover {
 
 h1.temp {
     margin: 0;
-    margin-bottom: 0.4em;
+    margin-top: 0.2em;
+}
+
+h2.city {
+    margin-top: 0.2em;
 }
 
 .flex {
@@ -165,7 +169,7 @@ footer {
     }
 
     .card {
-        max-height: 65% ;
+        max-height: 65%;
         max-width: 70%;
     }
 }
@@ -178,7 +182,7 @@ footer {
     }
 
     .sunrise_container, 
-    .sunset_container {   
+    .sunset_container {
     margin-top: 0rem;
     }
 

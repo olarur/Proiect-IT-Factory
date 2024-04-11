@@ -1,14 +1,23 @@
 let weather = {
     "apiKey": "36a2567472b78ff22356454bfd8acc4f",
-    fetchWeather: function(city) {
-        fetch("https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=metric&appid=" + this.apiKey)
-        .then((response) => response.json())
-        .then((data) => this.displayWeather(data));
-    },   
+    fetchWeather: async function(city) {
+        try {
+            const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${this.apiKey}`);
+            if (!response.ok) {
+                throw new Error("Network response was not ok");
+            }
+            const data = await response.json();
+            this.displayWeather(data);
+        } catch (error) {
+            console.error(city + " not found.");
+            alert(city + " not found.");
+        }
+    },  
 
     displayWeather: function (data) {
         console.log(data);
-        const { name } = data;
+        const { name, sys } = data;
+        const { country } = sys;
         const { icon, description } = data.weather[0];
         const { temp, temp_min, temp_max, feels_like, humidity } = data.main;
         const { speed } = data.wind;
@@ -31,7 +40,7 @@ let weather = {
         const sunsetHoursDisplay = sunsetHours < 10 ? '0' + sunsetHours : sunsetHours;
 
 
-        document.querySelector(".city").innerText = "Weather in " + name;
+        document.querySelector(".city").innerText = "Weather in " + name + ", " + this.convertCountryCode(country);
         document.querySelector(".icon").src = "https://openweathermap.org/img/wn/"+ icon + ".png";
         document.querySelector(".description").innerText = description;
         document.querySelector(".temp").innerText = temp.toFixed(0) + "°C";
@@ -50,6 +59,10 @@ let weather = {
     search: function () {
         this.fetchWeather(document.querySelector(".search-bar").value);
     },
+    convertCountryCode(country) {
+        let regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+        return regionNames.of(country);
+    }
 };
 
 document.querySelector(".search button").addEventListener("click", function () {
@@ -66,3 +79,36 @@ document.querySelector(".search-bar").addEventListener("keyup", function (event)
 
 weather.fetchWeather("Sibiu");
 
+document.addEventListener("DOMContentLoaded", function() {
+    let checkLocation = confirm("Check weather in your current location?");
+    if (checkLocation) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(success, error);
+        } else {
+            alert("Geolocation is not supported by this browser.");
+        }
+    }
+});
+
+function success(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+    fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&units=metric&appid=${weather.apiKey}`)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.json();
+    })
+    .then(data => {
+        weather.displayWeather(data);
+    })
+    .catch(error => {
+        console.error("Error fetching weather data:", error);
+        alert("Error fetching weather data.");
+    });
+}
+
+function error() {
+    alert("Unable to retrieve your location for weather information.");
+}
